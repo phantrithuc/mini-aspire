@@ -14,6 +14,13 @@ Run App
 npm start
 ```
 
+## Demo Input
+
+Notes:
+
+- Enter demo values of username and password in Login Form to login
+- Enter demo values of create loan form to get success otherwise mock axios return error
+
 # Folder Structure
 
 ```
@@ -27,6 +34,7 @@ npm start
  ┣ 📂store // redux store
  ┃ ┗ 📂ducks // a duck folder contains actions, reducers, actions types, thunks or sagas of a domain.
  ┣ 📂styles // share styles
+ ┣ 📂testUtils // create mock data
  ┗ 📂utils // pure functions
 
 ```
@@ -48,11 +56,3 @@ React Component that connects to Redux Store
 ### 3. Styled
 
 The Component or Container that are styled using [styled-components](https://www.styled-components.com/).
-
-# User Stories
-
-## Authentication
-
-### 1. Login
-
-As a user, I want to login

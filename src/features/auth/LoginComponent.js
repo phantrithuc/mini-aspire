@@ -26,7 +26,7 @@ const LoginForm = ({
   <Form onSubmit={handleSubmit} layout="vertical">
     <TitleStyled>Mini Aspire</TitleStyled>
     <Form.Item
-      label="Email"
+      label="Email(demo: user@aspire.com)"
       validateStatus={validateStatus(touched.email, errors.email)}
       help={touched.email && errors.email}
     >
@@ -43,7 +43,7 @@ const LoginForm = ({
       </Field>
     </Form.Item>
     <Form.Item
-      label="Password"
+      label="Password(demo: password)"
       validateStatus={validateStatus(touched.password, errors.password)}
       help={touched.password && errors.password}
     >

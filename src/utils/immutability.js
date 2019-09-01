@@ -4,3 +4,8 @@ export const updateItemById = (currentItems, newItem) =>
     $apply: items =>
       items.map(item => (item.id === newItem.id ? newItem : item))
   });
+
+export const addNewItem = (currentItems, newItem) =>
+  update(currentItems, {
+    $push: newItem
+  });

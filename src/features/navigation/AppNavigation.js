@@ -8,12 +8,7 @@ const AppNavigation = () => {
   return (
     <Switch>
       <Route path="/login" name="Auth" component={withRouter(AuthContainer)} />
-      <PrivateRoute
-        path="/"
-        exact
-        name="Home"
-        component={withRouter(HomeContainer)}
-      />
+      <PrivateRoute path="/" exact name="Home" component={HomeContainer} />
     </Switch>
   );
 };

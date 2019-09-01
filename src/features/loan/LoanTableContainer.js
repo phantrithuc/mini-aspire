@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, message } from 'antd';
-import { useDispatch } from 'react-redux';
-import { updateItemById } from 'utils/immutability';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserId } from 'store/ducks/auth/selectors';
+import { updateItemById, addNewItem } from 'utils/immutability';
 import { repay, submitLoan } from 'services/loanService';
 import { applyApiService } from 'services/apiService';
 import { tableConfig, LoanStatus } from 'const';
@@ -11,13 +12,10 @@ import LoanCreateComponent from './LoanCreateComponent';
 import { formatCurrency } from 'utils/strings';
 
 const LoanTableContainer = ({ initialValues }) => {
-  const [editingLoan, setEditingLoan] = useState(null);
+  const userId = useSelector(getUserId);
+  const [creatingLoan, setCreatingLoan] = useState(null);
   const [loans, setLoans] = useState(initialValues);
   const dispatch = useDispatch();
-  const [pageSize, setPageSize] = useState(
-    tableConfig.PAGINATION.defaultPageSize
-  );
-  const [currentPage, setCurrentPage] = useState(1);
   const replayLoan = async loan => {
     try {
       const newLoan = await applyApiService(dispatch, repay, loan);
@@ -53,45 +51,41 @@ const LoanTableContainer = ({ initialValues }) => {
       key: 'action',
       render: (text, record) => {
         return (
-          <>
-            <Button
-              type="link"
-              onClick={() => replayLoan(record)}
-              disabled={
-                !record.repaymentAmount || record.status === 'processing'
-              }
-            >
-              Repay
-            </Button>
-          </>
+          <Button
+            type="link"
+            onClick={async () => await replayLoan(record)}
+            disabled={!record.repaymentAmount || record.status === 'processing'}
+          >
+            Repay
+          </Button>
         );
       }
     }
   ];
   const handleConfirmEditLoan = async loan => {
     try {
-      const currentLength = loans.length;
-      await applyApiService(dispatch, submitLoan, loan);
-      setCurrentPage(parseInt(currentLength + 1 / pageSize) + 1);
-      setEditingLoan(null);
+      loan.userId = userId;
+      const response = await applyApiService(dispatch, submitLoan, loan);
+      setLoans(addNewItem(loans, [response.data]));
+      setCreatingLoan(null);
     } catch (error) {
       return { [FORM_ERROR]: 'Submit Loan error' };
     }
   };
   const handleCancelEditLoan = () => {
-    setEditingLoan(null);
+    setCreatingLoan(null);
   };
   const handleAddLoan = () => {
-    setEditingLoan({ activeStatus: 'Active', role: 'Admin' });
+    setCreatingLoan({ title: '', amount: 0 });
   };
 
   return (
     <>
-      {editingLoan && (
+      {creatingLoan && (
         <LoanCreateComponent
           handleSubmit={handleConfirmEditLoan}
           handleCancel={handleCancelEditLoan}
-          editingLoan={editingLoan}
+          editingLoan={creatingLoan}
         />
       )}
       <Button type="secondary" icon="file-add" onClick={handleAddLoan}>
@@ -101,12 +95,8 @@ const LoanTableContainer = ({ initialValues }) => {
         columns={columns}
         dataSource={loans}
         pagination={{
-          ...tableConfig.PAGINATION,
-          current: currentPage,
-          onChange: page => setCurrentPage(page),
-          onShowSizeChange: (current, size) => setPageSize(size)
+          ...tableConfig.PAGINATION
         }}
-        currentPage={currentPage}
         rowKey="id"
       />
     </>

@@ -74,6 +74,27 @@ const mockLoans = mock => {
   ]);
   mock.onPost(`${mockUrl}/loans/3/repay`).reply(200);
   mock.onPost(`${mockUrl}/loans/4/repay`).reply(400);
+  mock
+    .onPost(`${mockUrl}/loans`, {
+      title: 'Success',
+      amount: 8000,
+      term: 20,
+      userId: 1
+    })
+    .reply(200, {
+      id: 5,
+      title: 'Success',
+      initialAmount: 8000,
+      interest: 0.05,
+      term: 20,
+      payFrequent: 'weekly',
+      startedDate: new Date(2019, 9, 1),
+      repaymentMethod: 'onlyInterest',
+      balance: 8000,
+      repaymentAmount: 0,
+      status: 'processing'
+    });
+  mock.onPost(`${mockUrl}/loans`).reply(400);
 };
 
 export const initMockAxios = () => {

@@ -22,7 +22,7 @@ const HomeContainer = props => {
       setLoans(response.data);
     }
     fetchLoans();
-  }, [userId, dispatch]);
+  }, [dispatch, userId]);
   return (
     <LayoutComponent>
       <PageHeader title="Your Loans" />
